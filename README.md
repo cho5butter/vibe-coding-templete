@@ -1,6 +1,16 @@
 # vibe-coding-templete
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![品質ゲート](https://github.com/cho5butter/vibe-coding-templete/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/cho5butter/vibe-coding-templete/actions/workflows/quality-gate.yml)
+
 仕様駆動開発（Spec-Driven Development）のためのAIエージェント設定テンプレート。
+
+[![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge)](https://github.com/cho5butter/vibe-coding-templete/generate)
+
+```bash
+# または CLI から
+gh repo create my-project --template cho5butter/vibe-coding-templete
+```
 
 ## 対応エージェント
 
@@ -19,10 +29,7 @@
 
 ### 1. テンプレートからプロジェクトを作成
 
-```bash
-gh repo create my-project --template cho5butter/vibe-coding-templete
-cd my-project
-```
+上部の **Use this template** ボタン、または CLI（`gh repo create --template`）でリポジトリを作成し、クローンする。
 
 ### 2. specを記述
 
