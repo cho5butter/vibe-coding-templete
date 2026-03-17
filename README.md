@@ -122,8 +122,12 @@ flowchart TD
 │       └── usage-driven-development.mdc  # Cursor 用ルール（簡潔版）
 ├── .antigravity/
 │   └── rules.md                          # Google Antigravity 用ルール（簡潔版）
+├── .gitignore                               # Git除外設定（複数技術スタック対応）
 ├── .github/
 │   ├── copilot-instructions.md           # GitHub Copilot 用ルール（簡潔版）
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md                 # バグ報告テンプレート
+│   │   └── feature_request.md            # 機能リクエストテンプレート
 │   ├── PULL_REQUEST_TEMPLATE.md          # PRテンプレート
 │   └── workflows/
 │       └── quality-gate.yml              # CI: 品質ゲート
