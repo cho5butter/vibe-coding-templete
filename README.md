@@ -1,6 +1,6 @@
 # vibe-coding-templete
 
-使用駆動開発（Usage-Driven Development）のためのAIエージェント設定テンプレート。
+仕様駆動開発（Spec-Driven Development）のためのAIエージェント設定テンプレート。
 
 ## 対応エージェント
 
@@ -12,12 +12,14 @@
 | **GitHub Copilot** | `.github/copilot-instructions.md` | 自動読み込み |
 | **OpenAI Codex** | `AGENTS.md` | 自動読み込み |
 
+すべてのエージェントは共通のワークフロー定義（`spec/workflow.md`）を参照する。
+各エージェント用ファイルは簡潔なルール要約のみを含み、詳細は `spec/workflow.md` に集約されている。
+
 ## セットアップ
 
 ### 1. テンプレートからプロジェクトを作成
 
 ```bash
-# このリポジトリをコピー
 gh repo create my-project --template cho5butter/vibe-coding-templete
 cd my-project
 ```
@@ -26,11 +28,12 @@ cd my-project
 
 `spec/` フォルダ内のテンプレートを埋める:
 
-- `spec/requirements.md` — 要件定義（ユーザーストーリー、機能要件、非機能要件）
-- `spec/design.md` — 設計（アーキテクチャ、データモデル、API設計）
-- `spec/plan.md` — 実装計画（1セッション＝1計画の粒度で分割）
-
-各ファイルは原則1ファイル（Markdown＋Mermaid図）で管理する。膨大になった場合のみ分割可。
+| ファイル | 内容 |
+|----------|------|
+| `spec/requirements.md` | 要件定義（ユーザーストーリー、機能要件、非機能要件、受け入れ基準） |
+| `spec/design.md` | 設計（アーキテクチャ、データモデル、API設計、ADR） |
+| `spec/plan.md` | 実装計画（1セッション＝1計画の粒度で分割、依存関係・リスク明示） |
+| `spec/workflow.md` | ワークフロー定義（全エージェント共通ルール、参照用） |
 
 ### 3. pre-commitフックを有効化
 
@@ -38,17 +41,18 @@ cd my-project
 bash scripts/setup-hooks.sh
 ```
 
-これにより、コミット時に品質ゲート（リント・ビルド・テスト）が**自動実行**される。
-すべてパスしない限り、gitがコミットを拒否する。
+コミット時に品質ゲート（リント→ビルド→テスト）が**自動実行**される。
 
 ### 4. プロジェクト固有のコマンドを設定
 
-`scripts/` ディレクトリ内の各スクリプトを編集し、`TODO` コメントの箇所をプロジェクトに合わせて書き換える:
+`scripts/` ディレクトリ内の各スクリプトを編集し、`TODO` コメントをプロジェクトに合わせて書き換える:
 
-- `scripts/test.sh` — テストコマンド
-- `scripts/lint.sh` — リント・フォーマットコマンド
-- `scripts/build.sh` — ビルドコマンド
-- `scripts/quality-gate.sh` — 上記3つを順に実行（通常は編集不要）
+| スクリプト | 用途 |
+|-----------|------|
+| `scripts/lint.sh` | リント・フォーマット |
+| `scripts/build.sh` | ビルド |
+| `scripts/test.sh` | テスト |
+| `scripts/quality-gate.sh` | 上記3つを順に実行（通常は編集不要） |
 
 ### 5. GitHub Actions の設定
 
@@ -56,7 +60,18 @@ bash scripts/setup-hooks.sh
 
 ## ワークフロー
 
-すべてのAIエージェントは以下のワークフローに従う:
+### フェーズゲート
+
+```mermaid
+graph LR
+    A[要件定義] -->|ユーザー承認| B[設計]
+    B -->|ユーザー承認| C[計画]
+    C -->|ユーザー承認| D[実装]
+```
+
+各フェーズ間でユーザーの明示的な承認が必要。詳細は `spec/workflow.md` を参照。
+
+### 実装ワークフロー
 
 ```mermaid
 flowchart TD
@@ -72,13 +87,6 @@ flowchart TD
     H -->|いいえ| J[次の計画へ]
     I --> J
 ```
-
-### 計画の粒度
-
-- **1セッション＝1計画**: AIエージェントの1回のセッションで完了できるサイズ
-- **明確な完了条件**: テスト・品質ゲートで検証可能な成果物
-- **コミット必須**: 計画実行後は必ずコミット（MDファイルを含む）
-- **spec変更はユーザー合意**: specファイルの変更はユーザーの合意を得てから
 
 ## コミットメッセージ規約
 
@@ -101,29 +109,30 @@ flowchart TD
 
 ```
 .
-├── CLAUDE.md                          # Claude Code 用ルール
-├── AGENTS.md                          # OpenAI Codex 用ルール
-├── GEMINI.md                          # Gemini CLI / Antigravity 用コンテキスト
+├── CLAUDE.md                             # Claude Code 用ルール（簡潔版）
+├── AGENTS.md                             # OpenAI Codex 用ルール（簡潔版）
+├── GEMINI.md                             # Gemini CLI / Antigravity 用コンテキスト
 ├── spec/
-│   ├── requirements.md                # 要件定義（Markdown＋Mermaid）
-│   ├── design.md                      # 設計（Markdown＋Mermaid）
-│   └── plan.md                        # 実装計画（1セッション＝1計画）
+│   ├── requirements.md                   # 要件定義（Markdown＋Mermaid）
+│   ├── design.md                         # 設計（Markdown＋Mermaid＋ADR）
+│   ├── plan.md                           # 実装計画（1セッション＝1計画）
+│   └── workflow.md                       # ワークフロー定義（全エージェント共通）
 ├── .cursor/
 │   └── rules/
-│       └── usage-driven-development.mdc  # Cursor 用ルール
+│       └── usage-driven-development.mdc  # Cursor 用ルール（簡潔版）
 ├── .antigravity/
-│   └── rules.md                       # Google Antigravity 用ルール
+│   └── rules.md                          # Google Antigravity 用ルール（簡潔版）
 ├── .github/
-│   ├── copilot-instructions.md        # GitHub Copilot 用ルール
-│   ├── PULL_REQUEST_TEMPLATE.md       # PRテンプレート
+│   ├── copilot-instructions.md           # GitHub Copilot 用ルール（簡潔版）
+│   ├── PULL_REQUEST_TEMPLATE.md          # PRテンプレート
 │   └── workflows/
-│       └── quality-gate.yml           # CI: 品質ゲート
+│       └── quality-gate.yml              # CI: 品質ゲート
 ├── hooks/
-│   └── pre-commit                     # pre-commitフック（品質ゲート自動実行）
+│   └── pre-commit                        # pre-commitフック（品質ゲート自動実行）
 └── scripts/
-    ├── test.sh                        # テスト実行（単体・結合）
-    ├── lint.sh                        # リント・静的解析
-    ├── build.sh                       # ビルド確認
-    ├── quality-gate.sh                # 品質ゲート（全実行）
-    └── setup-hooks.sh                 # フックのセットアップ
+    ├── lint.sh                           # リント・静的解析
+    ├── build.sh                          # ビルド確認
+    ├── test.sh                           # テスト実行
+    ├── quality-gate.sh                   # 品質ゲート（全実行）
+    └── setup-hooks.sh                    # フックのセットアップ
 ```
