@@ -1,4 +1,4 @@
-# プロジェクトルール — OpenAI Codex
+# プロジェクトルール — AGENTS.md（Codex / Devin 共通）
 
 仕様駆動開発（Spec-Driven Development）テンプレート。
 詳細なワークフロー・ルールは `spec/workflow.md` を参照すること。
@@ -20,6 +20,21 @@ bash scripts/quality-gate.sh   # 品質ゲート（手動事前確認）
 bash scripts/lint.sh           # リント・静的解析
 bash scripts/build.sh          # ビルド確認
 bash scripts/test.sh           # テスト
+```
+
+## クロスAIレビュー
+
+各計画セッション終了時に、別のAIで変更箇所のレビューを実施すること（詳細は `spec/workflow.md` のクロスAIレビューセクション参照）。
+
+- **Codex で開発した場合**: Claude Code CLI（第一優先）でレビューを実施
+- **レビュー手順**: `bash scripts/cross-review.sh` → レビューAIに差分サマリーを渡す
+
+```bash
+# レビュー差分サマリー生成
+bash scripts/cross-review.sh
+
+# Claude CLI にレビュー依頼
+claude "$(cat .cross-review-summary.md) 上記の変更をレビューしてください。"
 ```
 
 ## コミットメッセージ

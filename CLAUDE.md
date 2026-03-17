@@ -35,6 +35,21 @@ bash scripts/test.sh    # テスト
 <種別>: <変更内容の要約>
 ```
 
+## クロスAIレビュー
+
+各計画セッション終了時に、別のAIで変更箇所のレビューを実施すること（詳細は `spec/workflow.md` のクロスAIレビューセクション参照）。
+
+- **Claude で開発した場合**: Codex（第一優先）でレビューを実施
+- **レビュー手順**: `bash scripts/cross-review.sh` → レビューAIに差分サマリーを渡す
+
+```bash
+# レビュー差分サマリー生成
+bash scripts/cross-review.sh
+
+# Codex にレビュー依頼
+codex "$(cat .cross-review-summary.md) 上記の変更をレビューしてください。"
+```
+
 ## プロジェクト構造
 
 - `spec/` — 要件・設計・計画・ワークフロー定義

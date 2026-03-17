@@ -1,6 +1,16 @@
 # vibe-coding-templete
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![品質ゲート](https://github.com/cho5butter/vibe-coding-templete/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/cho5butter/vibe-coding-templete/actions/workflows/quality-gate.yml)
+
 仕様駆動開発（Spec-Driven Development）のためのAIエージェント設定テンプレート。
+
+[![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge)](https://github.com/cho5butter/vibe-coding-templete/generate)
+
+```bash
+# または CLI から
+gh repo create my-project --template cho5butter/vibe-coding-templete
+```
 
 ## 対応エージェント
 
@@ -8,6 +18,7 @@
 |---|---|---|
 | **Claude Code** | `CLAUDE.md` | 自動読み込み |
 | **Cursor** | `.cursor/rules/usage-driven-development.mdc` | 自動読み込み（alwaysApply） |
+| **Devin** | `AGENTS.md` + `REVIEW.md` + `.devin/` | AGENTS.md で共通ルール、REVIEW.md でPRレビュー指示 |
 | **Google Antigravity** | `.antigravity/rules.md` + `GEMINI.md` | rules.md は自動、GEMINI.md はグローバル設定 |
 | **GitHub Copilot** | `.github/copilot-instructions.md` | 自動読み込み |
 | **OpenAI Codex** | `AGENTS.md` | 自動読み込み |
@@ -19,10 +30,7 @@
 
 ### 1. テンプレートからプロジェクトを作成
 
-```bash
-gh repo create my-project --template cho5butter/vibe-coding-templete
-cd my-project
-```
+上部の **Use this template** ボタン、または CLI（`gh repo create --template`）でリポジトリを作成し、クローンする。
 
 ### 2. specを記述
 
@@ -110,8 +118,9 @@ flowchart TD
 ```
 .
 ├── CLAUDE.md                             # Claude Code 用ルール（簡潔版）
-├── AGENTS.md                             # OpenAI Codex 用ルール（簡潔版）
+├── AGENTS.md                             # Codex / Devin 共通ルール（簡潔版）
 ├── GEMINI.md                             # Gemini CLI / Antigravity 用コンテキスト
+├── REVIEW.md                             # Devin Review 用 PRレビュー指示
 ├── spec/
 │   ├── requirements.md                   # 要件定義（Markdown＋Mermaid）
 │   ├── design.md                         # 設計（Markdown＋Mermaid＋ADR）
@@ -122,9 +131,17 @@ flowchart TD
 │       └── usage-driven-development.mdc  # Cursor 用ルール（簡潔版）
 ├── .antigravity/
 │   └── rules.md                          # Google Antigravity 用ルール（簡潔版）
+├── .devin/
+│   └── wiki.json                         # Devin DeepWiki 生成設定
+├── .gitignore                            # Git除外設定（複数技術スタック対応）
 ├── .github/
 │   ├── copilot-instructions.md           # GitHub Copilot 用ルール（簡潔版）
-│   ├── PULL_REQUEST_TEMPLATE.md          # PRテンプレート
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md                 # バグ報告テンプレート
+│   │   └── feature_request.md            # 機能リクエストテンプレート
+│   ├── PULL_REQUEST_TEMPLATE.md          # PRテンプレート（共通）
+│   ├── PULL_REQUEST_TEMPLATE/
+│   │   └── devin_pr_template.md          # Devin 専用 PRテンプレート
 │   └── workflows/
 │       └── quality-gate.yml              # CI: 品質ゲート
 ├── hooks/
