@@ -1,4 +1,4 @@
-# プロジェクトルール — OpenAI Codex
+# プロジェクトルール — AGENTS.md（Codex / Devin 共通）
 
 仕様駆動開発（Spec-Driven Development）テンプレート。
 詳細なワークフロー・ルールは `spec/workflow.md` を参照すること。
