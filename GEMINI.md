@@ -1,23 +1,17 @@
 # プロジェクトルール — Gemini CLI / Antigravity
 
-このファイルは Gemini CLI および Google Antigravity IDE 向けのグローバルコンテキストである。
-詳細なルールは `.antigravity/rules.md` を参照すること。
+仕様駆動開発（Spec-Driven Development）テンプレート。
+詳細なルールは `.antigravity/rules.md` および `spec/workflow.md` を参照すること。
 
 ## 必須事項
 
-1. **フェーズゲート式ワークフロー**: 要件定義→設計→計画→実装の順に進行し、**各フェーズ間でユーザーの明示的な承認を得ること**
-   - フェーズ1: 要件定義（`spec/requirements.md`）— ユーザーに繰り返し質問し、曖昧さがなくなるまで精査する
-   - フェーズ2: 設計（`spec/design.md`）— 要件に基づきアーキテクチャ等を策定
-   - フェーズ3: 計画（`spec/plan.md`）— 1セッション＝1計画の粒度で分割
-   - フェーズ4: 実装 — TDDで実装し品質ゲートを通過させる
-2. **spec管理**: `spec/` フォルダの要件・設計・計画を参照して作業すること
-3. **計画実行後は必ずコミット**（MDファイルも含めること）
-4. **spec変更はユーザー合意必須**（勝手に変更しない）
-5. **pre-commitフック**がコミット時に品質ゲートを自動実行する（初回: `bash scripts/setup-hooks.sh`）
-6. `--no-verify` でのフックスキップは禁止
-7. TDD: テストを先に書いてから実装
-8. コミットメッセージは日本語（例: `機能: ログイン機能を追加`）
-9. 品質ゲート（リント→ビルド→テスト）をすべてパスしないとコミット禁止
-10. PRは `.github/PULL_REQUEST_TEMPLATE.md` のテンプレートに従う
+1. **フェーズゲート厳守**: 要件定義→設計→計画→実装の順に進行し、各フェーズ間でユーザーの明示的な承認を得ること
+2. **spec参照必須**: 実装前に `spec/requirements.md` と `spec/design.md` を必ず読むこと
+3. **spec変更はユーザー合意必須**: `spec/` 内のファイルを勝手に変更してはならない
+4. **TDD厳守**: 要件からテストを先に書き、RED を確認してから実装する
+5. **品質ゲート必須**: `--no-verify` 禁止（初回: `bash scripts/setup-hooks.sh`）
+6. **コミットにMDファイルを含める**
+7. **コミットメッセージ**: 日本語（例: `機能: ログイン機能を追加`）
+8. **PR**: `.github/PULL_REQUEST_TEMPLATE.md` に従う
 
-詳細は `.antigravity/rules.md` を確認すること。
+詳細は `.antigravity/rules.md` および `spec/workflow.md` を確認すること。
