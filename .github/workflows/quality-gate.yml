@@ -1,0 +1,29 @@
+name: 品質ゲート
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: プロジェクトに合わせてセットアップステップを追加
+      # 例: Node.js の場合
+      # - uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+      # - run: npm ci
+
+      # 例: Python の場合
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.12'
+      # - run: pip install -r requirements.txt
+
+      - name: 品質ゲート実行
+        run: bash scripts/quality-gate.sh
