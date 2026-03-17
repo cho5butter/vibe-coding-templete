@@ -92,3 +92,8 @@ local.properties
 *.tmp
 *.bak
 coverage/
+
+# ===================
+# Cross-AI Review
+# ===================
+.cross-review-summary.md
