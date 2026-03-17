@@ -32,7 +32,16 @@ cd my-project
 
 各ファイルは原則1ファイル（Markdown＋Mermaid図）で管理する。膨大になった場合のみ分割可。
 
-### 3. プロジェクト固有のコマンドを設定
+### 3. pre-commitフックを有効化
+
+```bash
+bash scripts/setup-hooks.sh
+```
+
+これにより、コミット時に品質ゲート（リント・ビルド・テスト）が**自動実行**される。
+すべてパスしない限り、gitがコミットを拒否する。
+
+### 4. プロジェクト固有のコマンドを設定
 
 `scripts/` ディレクトリ内の各スクリプトを編集し、`TODO` コメントの箇所をプロジェクトに合わせて書き換える:
 
@@ -41,7 +50,7 @@ cd my-project
 - `scripts/build.sh` — ビルドコマンド
 - `scripts/quality-gate.sh` — 上記3つを順に実行（通常は編集不要）
 
-### 4. GitHub Actions の設定
+### 5. GitHub Actions の設定
 
 `.github/workflows/quality-gate.yml` のセットアップステップをプロジェクトに合わせて編集する。
 
@@ -109,9 +118,12 @@ flowchart TD
 │   ├── PULL_REQUEST_TEMPLATE.md       # PRテンプレート
 │   └── workflows/
 │       └── quality-gate.yml           # CI: 品質ゲート
+├── hooks/
+│   └── pre-commit                     # pre-commitフック（品質ゲート自動実行）
 └── scripts/
-    ├── test.sh                        # テスト実行
-    ├── lint.sh                        # リント・フォーマット
+    ├── test.sh                        # テスト実行（単体・結合）
+    ├── lint.sh                        # リント・静的解析
     ├── build.sh                       # ビルド確認
-    └── quality-gate.sh                # 品質ゲート（全実行）
+    ├── quality-gate.sh                # 品質ゲート（全実行）
+    └── setup-hooks.sh                 # フックのセットアップ
 ```
