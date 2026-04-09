@@ -199,13 +199,17 @@ graph LR
 
 ### レビューAI別の実行コマンド例
 
+> **タイムアウト必須**: すべてのAI CLIコマンドは `timeout 300`（5分）でラップすること。タイムアウト時はエラーメッセージを出力して手動レビューに切り替える。
+
 **Codex でレビューする場合:**
 ```bash
 # 差分サマリーを生成
 bash scripts/cross-review.sh
 
-# Codex CLI にレビューを依頼
-codex "$(cat .cross-review-summary.md) 上記の変更をレビューしてください。spec/requirements.md と spec/design.md を参照し、要件・設計との整合性、コード品質、セキュリティ、テストの十分性を確認してください。"
+# Codex CLI にレビューを依頼（タイムアウト300秒）
+timeout 300 codex --file .cross-review-summary.md \
+  "上記の変更をレビューしてください。spec/requirements.md と spec/design.md を参照し、要件・設計との整合性、コード品質、セキュリティ、テストの十分性を確認してください。" \
+  || echo "タイムアウトまたはエラー: レビューを手動で実施してください"
 ```
 
 **Claude Code CLI でレビューする場合:**
@@ -213,8 +217,10 @@ codex "$(cat .cross-review-summary.md) 上記の変更をレビューしてく�
 # 差分サマリーを生成
 bash scripts/cross-review.sh
 
-# Claude CLI にレビューを依頼
-claude "$(cat .cross-review-summary.md) 上記の変更をレビューしてください。spec/requirements.md と spec/design.md を参照し、要件・設計との整合性、コード品質、セキュリティ、テストの十分性を確認してください。"
+# Claude CLI にレビューを依頼（タイムアウト300秒）
+timeout 300 claude --file .cross-review-summary.md \
+  "上記の変更をレビューしてください。spec/requirements.md と spec/design.md を参照し、要件・設計との整合性、コード品質、セキュリティ、テストの十分性を確認してください。" \
+  || echo "タイムアウトまたはエラー: レビューを手動で実施してください"
 ```
 
 ### レビュー結果の扱い
@@ -238,6 +244,18 @@ claude "$(cat .cross-review-summary.md) 上記の変更をレビューしてく�
 **手動で事前確認:** `bash scripts/quality-gate.sh`
 
 **`--no-verify` でのフックスキップは禁止。** 品質ゲートを回避するコミットは許されない。
+
+### devcontainer でのテスト実行（推奨）
+
+テスト実行は devcontainer 内で行うことを推奨する。これにより、環境差異によるテスト失敗を防ぎ、CI/CD と同一環境で品質ゲートを通過できる。
+
+```bash
+# devcontainer 内でテストを実行
+devcontainer exec --workspace-folder . bash scripts/test.sh
+
+# devcontainer 内で品質ゲート全体を実行
+devcontainer exec --workspace-folder . bash scripts/quality-gate.sh
+```
 
 ### 初回セットアップ
 

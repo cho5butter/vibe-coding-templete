@@ -75,16 +75,16 @@
 
 ---
 
-## 必須事項
+## 絶対ルール
 
 1. **フェーズゲート厳守**: 要件定義→設計→計画→実装の順に進行し、各フェーズ間でユーザーの明示的な承認を得ること
 2. **spec参照必須**: 実装前に `spec/requirements.md` と `spec/design.md` を必ず読むこと
 3. **spec変更はユーザー合意必須**: `spec/` 内のファイルを勝手に変更してはならない
-4. **TDD厳守**: 要件からテストを先に書き、RED を確認してから実装する
-5. **品質ゲート必須**: `--no-verify` 禁止（初回: `bash scripts/setup-hooks.sh`）
-6. **コミットにMDファイルを含める**
-7. **コミットメッセージ**: 日本語（例: `機能: ログイン機能を追加`）
-8. **PR**: `.github/PULL_REQUEST_TEMPLATE.md` に従う
+4. **TDD厳守**: 要件からテストを先に書き、RED を確認してから実装する（詳細は `spec/workflow.md` のTDDガイドライン参照）
+5. **品質ゲート必須**: `--no-verify` 禁止。品質ゲートの失敗は根本原因を修正する
+6. **コミットにMDファイルを含める**: 計画で生成・変更されたMDファイルをコミットから除外しない
+7. **コミットメッセージは日本語**: 種別は `機能` / `修正` / `改善` / `整理` / `テスト` / `文書` / `設定` / `計画`
+8. **PRは `.github/PULL_REQUEST_TEMPLATE.md` に従う**: 概要・チェックリスト・テスト計画を記載
 9. **ドキュメントチェックボックス更新必須**: タスク完了直後に、該当するすべてのチェックボックスを `[ ]` から `[x]` に更新すること（対象: `spec/plan.md`・`spec/status.md` の初期化チェックリスト等）
 
 ---
@@ -102,5 +102,34 @@
 | タスク完了後にチェックボックスを更新しない | 実装完了と同時に `spec/plan.md` などの該当チェックボックスを `[x]` に更新する |
 
 ---
+
+## クロスAIレビュー
+
+各計画セッション終了時に、別のAIで変更箇所のレビューを実施すること（詳細は `spec/workflow.md` のクロスAIレビューセクション参照）。
+
+- **Gemini で開発した場合**: Codex（第一優先）、Claude Code CLI（第二優先）でレビューを実施
+- **レビュー手順**: `bash scripts/cross-review.sh` → レビューAIに差分サマリーを渡す
+- **タイムアウト**: AIコマンドには必ず `timeout 300`（5分）を付けること
+
+```bash
+# レビュー差分サマリー生成
+bash scripts/cross-review.sh
+
+# Codex にレビュー依頼（タイムアウト300秒）
+timeout 300 codex --file .cross-review-summary.md "上記の変更をレビューしてください。" || echo "タイムアウトまたはエラー: レビューを手動で実施してください"
+```
+
+## 頻用コマンド
+
+```bash
+bash scripts/setup-hooks.sh    # 初回セットアップ
+bash scripts/quality-gate.sh   # 品質ゲート（手動事前確認）
+bash scripts/lint.sh           # リント・静的解析
+bash scripts/build.sh          # ビルド確認
+bash scripts/test.sh           # テスト
+
+# devcontainer でテスト実行（推奨）
+devcontainer exec --workspace-folder . bash scripts/test.sh
+```
 
 詳細は `.antigravity/rules.md` および `spec/workflow.md` を確認すること。
