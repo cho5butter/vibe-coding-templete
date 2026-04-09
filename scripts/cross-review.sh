@@ -73,8 +73,8 @@ echo "=========================================="
 echo "  次のステップ: レビューAIに依頼"
 echo "=========================================="
 echo ""
-echo "Codex でレビューする場合:"
-echo '  codex "$(cat .cross-review-summary.md) 上記の変更をレビューしてください。"'
+echo "Codex でレビューする場合（タイムアウト300秒）:"
+echo '  timeout 300 codex --file .cross-review-summary.md "上記の変更をレビューしてください。" || echo "タイムアウト: 手動レビューへ切り替えてください"'
 echo ""
-echo "Claude CLI でレビューする場合:"
-echo '  claude "$(cat .cross-review-summary.md) 上記の変更をレビューしてください。"'
+echo "Claude CLI でレビューする場合（タイムアウト300秒）:"
+echo '  timeout 300 claude --file .cross-review-summary.md "上記の変更をレビューしてください。" || echo "タイムアウト: 手動レビューへ切り替えてください"'

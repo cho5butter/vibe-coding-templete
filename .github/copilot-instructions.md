@@ -83,7 +83,9 @@
 4. **TDD厳守**: 要件からテストを先に書き、RED を確認してから実装する（詳細は `spec/workflow.md` のTDDガイドライン参照）
 5. **品質ゲート必須**: `--no-verify` 禁止。品質ゲートの失敗は根本原因を修正する
 6. **コミットにMDファイルを含める**: 計画で生成・変更されたMDファイルをコミットから除外しない
-7. **ドキュメントチェックボックス更新必須**: タスク完了直後に、該当するすべてのチェックボックスを `[ ]` から `[x]` に更新すること（対象: `spec/plan.md`・`spec/status.md` の初期化チェックリスト等）
+7. **コミットメッセージは日本語**: 種別は `機能` / `修正` / `改善` / `整理` / `テスト` / `文書` / `設定` / `計画`
+8. **PRは `.github/PULL_REQUEST_TEMPLATE.md` に従う**: 概要・チェックリスト・テスト計画を記載
+9. **ドキュメントチェックボックス更新必須**: タスク完了直後に、該当するすべてのチェックボックスを `[ ]` から `[x]` に更新すること（対象: `spec/plan.md`・`spec/status.md` の初期化チェックリスト等）
 
 ---
 
@@ -117,13 +119,14 @@ bash scripts/test.sh           # テスト
 
 - **GitHub Copilot で開発した場合**: Codex（第一優先）、Claude Code CLI（第二優先）でレビューを実施
 - **レビュー手順**: `bash scripts/cross-review.sh` → レビューAIに差分サマリーを渡す
+- **タイムアウト**: AIコマンドには必ず `timeout 300`（5分）を付けること
 
 ```bash
 # レビュー差分サマリー生成
 bash scripts/cross-review.sh
 
-# Codex にレビュー依頼
-codex "$(cat .cross-review-summary.md) 上記の変更をレビューしてください。"
+# Codex にレビュー依頼（タイムアウト300秒）
+timeout 300 codex --file .cross-review-summary.md "上記の変更をレビューしてください。" || echo "タイムアウトまたはエラー: レビューを手動で実施してください"
 ```
 
 ## コミットメッセージ
@@ -132,4 +135,17 @@ codex "$(cat .cross-review-summary.md) 上記の変更をレビューしてく�
 
 ```
 <種別>: <変更内容の要約>
+```
+
+## 頻用コマンド
+
+```bash
+bash scripts/setup-hooks.sh    # 初回セットアップ
+bash scripts/quality-gate.sh   # 品質ゲート（手動事前確認）
+bash scripts/lint.sh           # リント・静的解析
+bash scripts/build.sh          # ビルド確認
+bash scripts/test.sh           # テスト
+
+# devcontainer でテスト実行（推奨）
+devcontainer exec --workspace-folder . bash scripts/test.sh
 ```
