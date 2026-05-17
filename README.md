@@ -1,7 +1,6 @@
 # vibe-coding-templete
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![品質ゲート](https://github.com/cho5butter/vibe-coding-templete/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/cho5butter/vibe-coding-templete/actions/workflows/quality-gate.yml)
 
 仕様駆動開発（Spec-Driven Development）のためのAIエージェント設定テンプレート。
 
@@ -62,9 +61,20 @@ bash scripts/setup-hooks.sh
 | `scripts/test.sh` | テスト |
 | `scripts/quality-gate.sh` | 上記3つを順に実行（通常は編集不要） |
 
-### 5. GitHub Actions の設定
+### 5. Dependabot の設定
 
-`.github/workflows/quality-gate.yml` のセットアップステップをプロジェクトに合わせて編集する。
+`.github/dependabot.yml` のコメントアウトされた `package-ecosystem` から、プロジェクトで使用するもの（npm / pip / gomod 等）を有効化する。
+
+- **毎週月曜 09:00 JST** にDependabotが脆弱性を自動スキャンし、必要に応じて更新PRを作成する
+- 脆弱性アラートは GitHub の **Security タブ** に表示される
+
+## パッケージバージョン選定ルール
+
+ライブラリ・フレームワークのバージョン指定時は、**今日の日付の3日前時点で公開済みの最新安定版**を採用する（リリース直後の不安定版を避けるため）。
+
+## 実装計画末尾の脆弱性レビュー
+
+`spec/plan.md` のすべての計画完了後、リリース/マージ前に **実装** と **パッケージ** の両面で脆弱性レビューを必ず実施する。詳細は `spec/workflow.md` および `spec/plan.md` 末尾の固定計画「脆弱性レビュー」を参照。
 
 ## ワークフロー
 
@@ -136,14 +146,13 @@ flowchart TD
 ├── .gitignore                            # Git除外設定（複数技術スタック対応）
 ├── .github/
 │   ├── copilot-instructions.md           # GitHub Copilot 用ルール（簡潔版）
+│   ├── dependabot.yml                    # Dependabot 設定（週次脆弱性スキャン）
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.md                 # バグ報告テンプレート
 │   │   └── feature_request.md            # 機能リクエストテンプレート
 │   ├── PULL_REQUEST_TEMPLATE.md          # PRテンプレート（共通）
-│   ├── PULL_REQUEST_TEMPLATE/
-│   │   └── devin_pr_template.md          # Devin 専用 PRテンプレート
-│   └── workflows/
-│       └── quality-gate.yml              # CI: 品質ゲート
+│   └── PULL_REQUEST_TEMPLATE/
+│       └── devin_pr_template.md          # Devin 専用 PRテンプレート
 ├── hooks/
 │   └── pre-commit                        # pre-commitフック（品質ゲート自動実行）
 └── scripts/

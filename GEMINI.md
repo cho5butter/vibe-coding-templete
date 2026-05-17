@@ -103,21 +103,27 @@
 
 ---
 
-## クロスAIレビュー
+## パッケージバージョン選定ルール
 
-各計画セッション終了時に、別のAIで変更箇所のレビューを実施すること（詳細は `spec/workflow.md` のクロスAIレビューセクション参照）。
+- ライブラリ・フレームワークのバージョン指定時は、**今日の日付の3日前時点で公開済みの最新安定版**を採用する
+- リリース直後の不安定版を避けるための予防策
+- 例: 今日が `2026-05-17` なら `2026-05-14` 時点で公開済みの最新安定版を選ぶ
+- `--before` 相当の指定ができないパッケージマネージャでは、レジストリ（npm registry / PyPI / pkg.go.dev 等）で公開日を確認する
 
-- **Gemini で開発した場合**: Codex（第一優先）、Claude Code CLI（第二優先）でレビューを実施
-- **レビュー手順**: `bash scripts/cross-review.sh` → レビューAIに差分サマリーを渡す
-- **タイムアウト**: AIコマンドには必ず `timeout 300`（5分）を付けること
+## 実装計画末尾の脆弱性レビュー（必須）
 
-```bash
-# レビュー差分サマリー生成
-bash scripts/cross-review.sh
+`spec/plan.md` のすべての計画完了後、リリース/マージ前に **必ず** 以下の脆弱性レビューを実施する:
 
-# Codex にレビュー依頼（タイムアウト300秒）
-timeout 300 codex --file .cross-review-summary.md "上記の変更をレビューしてください。" || echo "タイムアウトまたはエラー: レビューを手動で実施してください"
-```
+1. **実装の脆弱性レビュー**: OWASP Top 10（インジェクション、XSS、認証/認可不備、機微情報露出、SSRF 等）、入力検証・出力エスケープ・認可チェックの抜け漏れ、秘密情報のハードコード等
+2. **パッケージの脆弱性レビュー**: 言語標準のスキャナ（`npm audit` / `pnpm audit` / `bun audit` / `pip-audit` / `govulncheck ./...` / `cargo audit` 等）を実行、GitHub Security タブ（Dependabot アラート）を確認
+
+High / Critical は **マージ前に解消** すること。詳細は `spec/workflow.md` の「実装計画末尾の脆弱性レビュー」セクション、および `spec/plan.md` 末尾の固定計画「脆弱性レビュー」を参照。
+
+## Dependabot（週次脆弱性チェック）
+
+- `.github/dependabot.yml` で **毎週月曜 09:00 JST** に脆弱性スキャンが自動実行される
+- 脆弱性が検出された場合、Dependabot が **更新PRを自動作成** する（GitHub Security タブにもアラート表示）
+- 新規プロジェクトでは、`.github/dependabot.yml` のコメントアウトされた `package-ecosystem` を使用する技術スタックに応じて有効化すること
 
 ## 頻用コマンド
 
