@@ -45,7 +45,7 @@
 - [ ] `scripts/lint.sh` をプロジェクトに合わせて書き換えた
 - [ ] `scripts/build.sh` をプロジェクトに合わせて書き換えた
 - [ ] `scripts/test.sh` をプロジェクトに合わせて書き換えた
-- [ ] `.github/workflows/quality-gate.yml` のセットアップステップを書き換えた
+- [ ] `.github/dependabot.yml` で使用する `package-ecosystem` のコメントアウトを解除した
 - [ ] `bash scripts/setup-hooks.sh` を実行してpre-commitフックを有効化した
 
 ## ステータス更新ルール
