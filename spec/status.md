@@ -26,10 +26,10 @@
 ## 直近の状況
 
 **最後に実施したこと**:
-プロンプトルール（CLAUDE.md / AGENTS.md / GEMINI.md / spec/workflow.md）に DDD・OWASP Top 10・画面表示100ms目標・grill-with-docsスキル・デザインフェーズ・自己レビュー の要素を追加した。
+`grill-with-docs` スキルを `.claude/skills/grill-with-docs/SKILL.md` として配置した。既存プロンプト（CLAUDE.md / AGENTS.md / GEMINI.md / spec/workflow.md）の参照と整合しており、矛盾は検出されなかったため既存ファイルの編集は不要だった。
 
 **次のアクション**:
-ユーザーが新しいルールを確認したら、要件定義フェーズを開始する。
+ユーザーが新しいルール・スキル配置を確認したら、要件定義フェーズを開始する。
 
 **ブロッカー・懸念事項**:
 <!-- 例: ターゲットユーザーの定義が曖昧。ユーザーに確認が必要 -->
